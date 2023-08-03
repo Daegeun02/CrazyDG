@@ -2,6 +2,8 @@ from navigation import Navigation
 
 from control import Controller
 
+from recorder import Recorder
+
 from crazy import CrazyDragon
 
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
@@ -31,9 +33,11 @@ if __name__ == "__main__":
 
         NAV = Navigation( _cf, nav_config )
         CTR = Controller( _cf, ctr_config )
+        RCD = Recorder( _cf, CTR )
 
         NAV.start()
         CTR.start()
+        RCD.start()
 
         ## your guidance function ##
         CTR.init_send_setpoint()
@@ -42,3 +46,9 @@ if __name__ == "__main__":
         ############################
 
         CTR.stop_send_setpoint()
+
+        NAV.join()
+        CTR.join()
+        RCD.join()
+
+    NAV.qtm.close()
