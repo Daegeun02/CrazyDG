@@ -38,7 +38,7 @@ def goto( cf: CrazyDragon, destination, T, dt=0.1 ):
     for _ in range( n ):
 
         des_cmd[:] = smooth_command( 
-            des, cur, t, 2.0
+            des, cur, t, int( T / 2 )
         )
 
         P_pos[:] = des_cmd - pos

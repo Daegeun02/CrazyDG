@@ -1,4 +1,4 @@
-from crazy import CrazyDragon
+from ..crazy import CrazyDragon
 
 from threading import Thread
 
@@ -6,7 +6,7 @@ from numpy import zeros, array
 
 from time  import sleep
 
-from control import alpha
+from ..control import alpha
 
 from .visualizer import *
 

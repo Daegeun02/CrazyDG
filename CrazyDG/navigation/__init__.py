@@ -1,4 +1,4 @@
-from crazy import CrazyDragon
+from ..crazy import CrazyDragon
 
 from threading import Thread
 

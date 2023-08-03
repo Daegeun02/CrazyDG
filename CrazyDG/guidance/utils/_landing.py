@@ -1,4 +1,4 @@
-from crazy import CrazyDragon
+from ...crazy import CrazyDragon
 
 from .smoother import smooth_command
 
@@ -11,7 +11,7 @@ from time import sleep
 
 
 
-def landing( cf: CrazyDragon, option=1, h=0.2, T=3, dt=0.1, step=0.075 ):
+def landing( cf: CrazyDragon, option=1, h=0.2, T=5, dt=0.1, step=0.075 ):
 
     cur     = zeros(3)
     des     = zeros(3)
@@ -46,7 +46,7 @@ def landing( cf: CrazyDragon, option=1, h=0.2, T=3, dt=0.1, step=0.075 ):
     for _ in range( n ):
 
         des_cmd[:] = smooth_command( 
-            des, cur, t, 3.0
+            des, cur, t, 5.0
         )
 
         P_pos[:] = des_cmd - pos

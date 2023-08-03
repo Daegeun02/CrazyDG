@@ -1,4 +1,4 @@
-from crazy import CrazyDragon
+from ...crazy import CrazyDragon
 
 from .smoother import smooth_command
 
