@@ -2,15 +2,16 @@ from crazy import CrazyDragon
 
 from .smoother import smooth_command
 
-from numpy import array, zeros
+from .constants import Kp, Kd, g
+
+from numpy        import array, zeros
+from numpy.linalg import norm
 
 from time import sleep
 
-from constants import Kp, Kd, g
 
 
-
-def hover( cf: CrazyDragon, T, dt=0.1 ):
+def landing( cf: CrazyDragon, h=0.2, T=3, dt=0.1, step=0.075 ):
 
     cur     = zeros(3)
     des     = zeros(3)
@@ -20,7 +21,7 @@ def hover( cf: CrazyDragon, T, dt=0.1 ):
     D_pos   = zeros(3)
     care_g  = array([0,0,g])
 
-    print( 'hover' )
+    print( 'landing' )
 
     n = int( T / dt )
     t = 0
@@ -31,14 +32,24 @@ def hover( cf: CrazyDragon, T, dt=0.1 ):
     pos    = cf.pos
     vel    = cf.vel
 
-    des[:] = cur[:]
+    des[0] = cur[0]
+    des[1] = cur[1]
+    des[2] = h
 
     cf.destination[:] = des
 
     for _ in range( n ):
 
-        P_pos[:] = des - pos
+        des_cmd[:] = smooth_command( 
+            des, cur, t, int( T/2 )
+        )
+
+        P_pos[:] = des_cmd - pos
         D_pos[:] = vel
+
+        if ( norm( pos - des ) ) < 0.1:
+            care_g[2] -= step
+            break
 
         acc_cmd[:] = 0
         acc_cmd[:] += P_pos * Kp

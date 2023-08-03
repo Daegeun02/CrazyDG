@@ -2,16 +2,15 @@ from crazy import CrazyDragon
 
 from .smoother import smooth_command
 
-from numpy        import array, zeros
-from numpy.linalg import norm
+from .constants import Kp, Kd, g
+
+from numpy import array, zeros
 
 from time import sleep
 
-from constants import Kp, Kd, g
 
 
-
-def landing( cf: CrazyDragon, h=0.2, T=3, dt=0.1, step=0.075 ):
+def goto( cf: CrazyDragon, destination, T, dt=0.1 ):
 
     cur     = zeros(3)
     des     = zeros(3)
@@ -21,7 +20,7 @@ def landing( cf: CrazyDragon, h=0.2, T=3, dt=0.1, step=0.075 ):
     D_pos   = zeros(3)
     care_g  = array([0,0,g])
 
-    print( 'landing' )
+    print( 'goto =>', destination )
 
     n = int( T / dt )
     t = 0
@@ -32,9 +31,7 @@ def landing( cf: CrazyDragon, h=0.2, T=3, dt=0.1, step=0.075 ):
     pos    = cf.pos
     vel    = cf.vel
 
-    des[0] = cur[0]
-    des[1] = cur[1]
-    des[2] = h
+    des[:] = destination
 
     cf.destination[:] = des
 
@@ -46,10 +43,6 @@ def landing( cf: CrazyDragon, h=0.2, T=3, dt=0.1, step=0.075 ):
 
         P_pos[:] = des_cmd - pos
         D_pos[:] = vel
-
-        if ( norm( pos - des ) ) < 0.1:
-            care_g[2] -= step
-            break
 
         acc_cmd[:] = 0
         acc_cmd[:] += P_pos * Kp

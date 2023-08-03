@@ -2,15 +2,15 @@ from crazy import CrazyDragon
 
 from .smoother import smooth_command
 
+from .constants import Kp, Kd, g
+
 from numpy import array, zeros
 
 from time import sleep
 
-from constants import Kp, Kd, g
 
 
-
-def goto( cf: CrazyDragon, destination, T, dt=0.1 ):
+def hover( cf: CrazyDragon, T, dt=0.1 ):
 
     cur     = zeros(3)
     des     = zeros(3)
@@ -20,7 +20,7 @@ def goto( cf: CrazyDragon, destination, T, dt=0.1 ):
     D_pos   = zeros(3)
     care_g  = array([0,0,g])
 
-    print( 'goto =>', destination )
+    print( 'hover' )
 
     n = int( T / dt )
     t = 0
@@ -31,17 +31,13 @@ def goto( cf: CrazyDragon, destination, T, dt=0.1 ):
     pos    = cf.pos
     vel    = cf.vel
 
-    des[:] = destination
+    des[:] = cur[:]
 
     cf.destination[:] = des
 
     for _ in range( n ):
 
-        des_cmd[:] = smooth_command( 
-            des, cur, t, int( T/2 )
-        )
-
-        P_pos[:] = des_cmd - pos
+        P_pos[:] = des - pos
         D_pos[:] = vel
 
         acc_cmd[:] = 0

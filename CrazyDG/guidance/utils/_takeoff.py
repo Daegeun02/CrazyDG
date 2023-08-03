@@ -2,11 +2,11 @@ from crazy import CrazyDragon
 
 from .smoother import smooth_command
 
+from .constants import Kp, Kd, g
+
 from numpy import array, zeros
 
 from time import sleep
-
-from constants import Kp, Kd, g
 
 
 
