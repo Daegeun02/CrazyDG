@@ -1,4 +1,4 @@
-from crazy import CrazyDragon
+from ...crazy import CrazyDragon
 
 from .smoother import smooth_command
 
@@ -38,7 +38,7 @@ def goto( cf: CrazyDragon, destination, T, dt=0.1 ):
     for _ in range( n ):
 
         des_cmd[:] = smooth_command( 
-            des, cur, t, int( T/2 )
+            des, cur, t, 2.0
         )
 
         P_pos[:] = des_cmd - pos

@@ -40,7 +40,7 @@ def takeoff( cf: CrazyDragon, h=1.5, T=3, dt=0.1 ):
     for _ in range( n ):
 
         des_cmd[:] = smooth_command( 
-            des, cur, t, int( T/2 )
+            des, cur, t, 1.5
         )
 
         P_pos[:] = des_cmd - pos

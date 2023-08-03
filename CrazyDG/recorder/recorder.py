@@ -39,6 +39,7 @@ class Recorder( Thread ):
         }
         ## data storage
         self.record_datastrg = {
+            'acc'   : zeros((3,n)),
             'acccmd': zeros((3,n)),
             'vel'   : zeros((3,n)),
             'pos'   : zeros((3,n)),
@@ -49,6 +50,7 @@ class Recorder( Thread ):
         }
         ## realtime data
         self.realtime_data = {
+            'acc'   : cf.acc,
             'acccmd': cf.command,
             'vel'   : cf.vel,
             'pos'   : cf.pos,
@@ -67,7 +69,7 @@ class Recorder( Thread ):
 
         while self.recording:
 
-            self.record_datastrg['acc'][:,self.record_length] = cf.rot @ self.realtime_data['acc']
+            self.record_datastrg['acc'][:,self.record_length] = self.realtime_data['acc']
 
             for key, callback in self.record_callback.items():
 

@@ -1,4 +1,4 @@
-from crazy import CrazyDragon
+from ..crazy import CrazyDragon
 
 from threading import Thread
 
@@ -8,7 +8,7 @@ from .integral_loop import _thrust_clip
 from .optimus_prime import _command_as_RPY
 from .optimus_prime import _command_is_not_in_there
 
-from constants import alpha
+from .constants import alpha
 
 from numpy import zeros, array
 
@@ -20,13 +20,19 @@ class Controller( Thread ):
 
     def __init__( self, cf: CrazyDragon, config ):
         
-        super().__init__( self, daemon=True )
+        super().__init__()
+
+        self.daemon = True
 
         self.cf = cf
         self.dt = config['dt']
         self.n  = config['n']
 
         self.ready_for_command = False
+
+        self.acc_cmd = zeros(3)
+        self.command = zeros(4)
+        self.thrust  = array( [alpha * 9.81], dtype=int )
 
 
     def init_send_setpoint( self ):
@@ -58,14 +64,16 @@ class Controller( Thread ):
         att_cur = cf.att
         acc_cur = cf.acc
 
-        acc_cmd = zeros(3)
-        command = zeros(4)
-        thrust  = array( [alpha * 9.81], dtype=int )
+        acc_cmd = self.acc_cmd
+        command = self.command
+        thrust  = self.thrust
 
         while not self.ready_for_command:
             sleep( 0.1 )
 
         while self.ready_for_command:
+
+            acc_cmd[:] = cf.command
 
             _command_is_not_in_there( acc_cmd, att_cur )
 
@@ -85,7 +93,7 @@ class Controller( Thread ):
                     command[0],
                     command[1],
                     command[2],
-                    command[3]
+                    thrust[0]
                 )
 
                 sleep( dt )

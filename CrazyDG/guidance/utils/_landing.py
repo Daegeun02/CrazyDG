@@ -11,7 +11,7 @@ from time import sleep
 
 
 
-def landing( cf: CrazyDragon, h=0.2, T=3, dt=0.1, step=0.075 ):
+def landing( cf: CrazyDragon, option=1, h=0.2, T=3, dt=0.1, step=0.075 ):
 
     cur     = zeros(3)
     des     = zeros(3)
@@ -32,23 +32,27 @@ def landing( cf: CrazyDragon, h=0.2, T=3, dt=0.1, step=0.075 ):
     pos    = cf.pos
     vel    = cf.vel
 
-    des[0] = cur[0]
-    des[1] = cur[1]
-    des[2] = h
+    if option:
+        des[0] = cur[0]
+        des[1] = cur[1]
+        des[2] = h
+    else:
+        des[0] = 0
+        des[1] = 0
+        des[2] = h
 
     cf.destination[:] = des
 
     for _ in range( n ):
 
         des_cmd[:] = smooth_command( 
-            des, cur, t, int( T/2 )
+            des, cur, t, 3.0
         )
 
         P_pos[:] = des_cmd - pos
         D_pos[:] = vel
 
-        if ( norm( pos - des ) ) < 0.1:
-            care_g[2] -= step
+        if ( norm( pos - des ) ) < 0.2:
             break
 
         acc_cmd[:] = 0

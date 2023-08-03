@@ -14,7 +14,6 @@ def hover( cf: CrazyDragon, T, dt=0.1 ):
 
     cur     = zeros(3)
     des     = zeros(3)
-    des_cmd = zeros(3)
     acc_cmd = zeros(3)
     P_pos   = zeros(3)
     D_pos   = zeros(3)
