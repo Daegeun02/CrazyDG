@@ -50,6 +50,11 @@ class Controller( Thread ):
         self.cf.command[:] = zeros(3)
         ## stop signal
         self.ready_for_command = False
+
+        for _ in range( 50 ):
+            commander.send_setpoint( 0, 0, 0, 10001 )
+            sleep( 0.2 )
+
         commander.send_stop_setpoint()
 
 
@@ -70,6 +75,8 @@ class Controller( Thread ):
 
         while not self.ready_for_command:
             sleep( 0.1 )
+
+        print( 'controller starts working' )
 
         while self.ready_for_command:
 
@@ -97,3 +104,5 @@ class Controller( Thread ):
                 )
 
                 sleep( dt )
+
+        print( 'controller end' )

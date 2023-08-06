@@ -1,7 +1,5 @@
 from ...crazy import CrazyDragon
 
-from .smoother import smooth_command
-
 from .constants import Kp, Kd, g
 
 from numpy import array, zeros
@@ -14,7 +12,6 @@ def takeoff( cf: CrazyDragon, h=1.5, T=3, dt=0.1 ):
 
     cur     = zeros(3)
     des     = zeros(3)
-    des_cmd = zeros(3)
     acc_cmd = zeros(3)
     P_pos   = zeros(3)
     D_pos   = zeros(3)
@@ -39,11 +36,7 @@ def takeoff( cf: CrazyDragon, h=1.5, T=3, dt=0.1 ):
 
     for _ in range( n ):
 
-        des_cmd[:] = smooth_command( 
-            des, cur, t, 1.5
-        )
-
-        P_pos[:] = des_cmd - pos
+        P_pos[:] = des - pos
         D_pos[:] = vel
 
         acc_cmd[:] = 0

@@ -2,13 +2,20 @@ from ...crazy import CrazyDragon
 
 from ...recorder import Recorder
 
-from .constants import Kp, Kd, g
+# from .constants import Kp, Kd, g
 
 from numpy        import array, zeros
 from numpy.linalg import norm
 
 from time import sleep
 
+
+
+w = array([0.700,0.700,0.700])
+j = array([1.600,1.600,0.700])
+
+Kp = w * w
+Kd = 2 * j * w
 
 
 def landing_supporter( cf: CrazyDragon, recorder:Recorder, option=1, dt=0.1, step=0.03 ):
@@ -24,11 +31,16 @@ def landing_supporter( cf: CrazyDragon, recorder:Recorder, option=1, dt=0.1, ste
     pos = cf.pos
     vel = cf.vel
 
-    des[:] = 0
+    des[:] = pos
 
     for _ in range( 30 ):
 
-        if ( norm( pos ) < 0.05 ):
+        if ( des[2] > 0 ):
+            des[:] -= step
+        else:
+            des[:] = 0
+
+        if ( norm( pos ) < 0.02 ):
             break
 
         P_pos[:] = des - pos
@@ -41,8 +53,14 @@ def landing_supporter( cf: CrazyDragon, recorder:Recorder, option=1, dt=0.1, ste
 
         cf.command[:] = acc_cmd
 
-        print( acc_cmd )
-
         sleep( dt )
+
+    acc_cmd[:] = care_g
+
+    for _ in range( 10 ):
+
+        acc_cmd[2] -= step
+
+        cf.command[:] = acc_cmd
 
     print( 'land' )

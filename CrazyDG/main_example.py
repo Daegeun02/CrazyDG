@@ -1,10 +1,8 @@
-from navigation import Navigation
-
-from control import Controller
-
-from recorder import Recorder
-
-from crazy import CrazyDragon
+from CrazyDG import CrazyDragon
+from CrazyDG import Navigation
+from CrazyDG import Controller
+from CrazyDG import Recorder
+from CrazyDG import utils
 
 from cflib                         import crtp
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
@@ -43,6 +41,16 @@ if __name__ == "__main__":
         ## your guidance function ##
         CTR.init_send_setpoint()
         ##       from here        ##
+
+        utils.takeoff( _cf )
+
+        utils.hover( _cf, T=2 )
+
+        utils.goto( _cf, [2.0,2.0,2.0], T=5 )
+
+        utils.hover( _cf, T=2 )
+
+        utils.landing_supporter( _cf, RCD )
 
         ############################
 

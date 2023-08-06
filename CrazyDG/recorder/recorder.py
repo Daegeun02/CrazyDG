@@ -2,6 +2,10 @@ from ..crazy import CrazyDragon
 
 from threading import Thread
 
+from os import system
+
+from datetime import datetime
+
 from numpy import zeros, array
 
 from time  import sleep
@@ -100,9 +104,13 @@ class Recorder( Thread ):
     
     def join(self):
 
+        self.recording = False
+
         super().join()
 
         _len = self.record_length
+        _stt = self.guidance_start_idx
+        _end = self.guidance_end_idx
 
         acc    = self.record_datastrg['acc']
         acccmd = self.record_datastrg['acccmd']
@@ -116,16 +124,24 @@ class Recorder( Thread ):
         cmd    = self.record_datastrg['cmd']
         thrust = self.record_datastrg['thrust']
 
-        plot_acc_pos_cmd(acc, acccmd, vel, pos, posref, _len)
-        plot_thrust(thrust[0,:], cmd[3,:]*alpha, _len)
-        plot_att(att, cmd[:3,:], _len)
+        d = datetime.now()
+        date      = f'{d.year}-{d.month}-{d.day:02}-{d.hour:02}-{d.minute:02}-{d.second:02}'
+        self.date = date
+
+        system( f'cd ./flight_data && mkdir {date}' )
+
+        plot_acc_pos_cmd( acc, acccmd, vel, pos, posref, _len, _stt, _end, date )
+        plot_thrust( thrust[0,:], cmd[3,:]*alpha, _len, _stt, _end, date )
+        plot_att( att, cmd[:3,:], _len, _stt, _end, date )
+
+        plot_trj( pos, _len, _stt, _end, date )
 
 
-def array_type_data_callback(datastrg, data, i):
+def array_type_data_callback( datastrg, data, i ):
 
-    datastrg[:,i] = array(data)
+    datastrg[:,i] = array( data )
 
 
-def float_type_data_callback(datastrg, data, i):
+def float_type_data_callback( datastrg, data, i ):
 
     datastrg[0,i] = data
