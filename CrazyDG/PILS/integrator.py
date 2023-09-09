@@ -40,5 +40,3 @@ def _A_RK4(dy_dx, x, y, dt, args=None):
     ny = y + ( 1.0 / 8.0 ) * ( k1 + 3 * k2 + 3 * k3 + k4 )
 
     return ny
-
-ghp_nDK4SXQIlIyutsv1d5aa1XMSobkhgg46PgOk
