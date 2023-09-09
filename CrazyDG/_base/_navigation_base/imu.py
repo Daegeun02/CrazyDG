@@ -1,4 +1,4 @@
-from ..crazy import CrazyDragon
+from ...crazy import CrazyDragon
 
 from .imu_setup import *
 
@@ -14,10 +14,6 @@ class IMU:
     def __init__( self, cf: CrazyDragon ):
 
         self.cf = cf
-
-        adjust_orientation_sensitivity( cf )
-        activate_kalman_estimator( cf )
-        reset_estimator( cf )
 
 
     def start_get_vel( self, period_in_ms=period_in_ms ):

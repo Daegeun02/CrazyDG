@@ -2,8 +2,9 @@ from ..crazy import CrazyDragon
 
 from threading import Thread
 
-from .imu       import IMU
-from .qualisys  import Qualisys
+from .._base._navigation_base.imu       import IMU
+from .._base._navigation_base.imu_setup import preflight_sequence
+from .._base._navigation_base.qualisys  import Qualisys
 
 from time import sleep
 
@@ -33,12 +34,17 @@ class Navigation( Thread ):
 
         cf.extpos.send_extpos( data[0], data[1], data[2] )
 
+
     def run( self ):
 
         cf = self.cf
 
         imu = self.imu
         qtm = self.qtm
+
+        preflight_sequence( cf )
+
+        sleep( 1 )
 
         imu.start_get_acc()
         imu.start_get_vel()
@@ -48,6 +54,7 @@ class Navigation( Thread ):
         while self.navigate:
 
             sleep( 0.1 )
+
 
     def join( self ):
 

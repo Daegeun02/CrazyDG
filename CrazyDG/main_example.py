@@ -1,8 +1,8 @@
-from CrazyDG import CrazyDragon
-from CrazyDG import Navigation
-from CrazyDG import Controller
-from CrazyDG import Recorder
-from CrazyDG import utils
+from crazy      import CrazyDragon # >>> from CrazyDG import CrazyDragon
+from navigation import Navigation  # >>> from CrazyDG import Navigation
+from control    import Controller  # >>> from CrazyDG import Controller
+from recorder   import Recorder    # >>> from CrazyDG import Recorder
+from guidance   import utils       # >>> from CrazyDG import utils
 
 from cflib                         import crtp
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie

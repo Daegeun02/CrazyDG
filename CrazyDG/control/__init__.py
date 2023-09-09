@@ -2,13 +2,13 @@ from ..crazy import CrazyDragon
 
 from threading import Thread
 
-from .integral_loop import _dot_thrust
-from .integral_loop import _thrust_clip
+from .._base._controller_base.integral_loop import _dot_thrust
+from .._base._controller_base.integral_loop import _thrust_clip
 
-from .optimus_prime import _command_as_RPY
-from .optimus_prime import _command_is_not_in_there
+from .._base._controller_base.optimus_prime import _command_as_RPY
+from .._base._controller_base.optimus_prime import _command_is_not_in_there
 
-from .constants import alpha
+from .._base._controller_base.constants import alpha
 
 from numpy import zeros, array
 
@@ -28,8 +28,6 @@ class Controller( Thread ):
         self.dt = config['dt']
         self.n  = config['n']
 
-        self.ready_for_command = False
-
         self.acc_cmd = zeros(3)
         self.command = zeros(4)
         self.thrust  = array( [alpha * 9.81], dtype=int )
@@ -40,7 +38,7 @@ class Controller( Thread ):
         commander = self.cf.commander
         ## initialize
         commander.send_setpoint( 0, 0, 0, 0 )
-        self.ready_for_command = True
+        self.cf.ready_for_command = True
 
 
     def stop_send_setpoint( self ):
@@ -49,7 +47,7 @@ class Controller( Thread ):
         ## stop command
         self.cf.command[:] = zeros(3)
         ## stop signal
-        self.ready_for_command = False
+        self.cf.ready_for_command = False
 
         for _ in range( 50 ):
             commander.send_setpoint( 0, 0, 0, 10001 )
@@ -73,12 +71,12 @@ class Controller( Thread ):
         command = self.command
         thrust  = self.thrust
 
-        while not self.ready_for_command:
+        while not cf.ready_for_command:
             sleep( 0.1 )
 
         print( 'controller starts working' )
 
-        while self.ready_for_command:
+        while cf.ready_for_command:
 
             acc_cmd[:] = cf.command
 
