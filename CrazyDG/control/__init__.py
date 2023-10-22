@@ -80,7 +80,7 @@ class Controller( Thread ):
 
             acc_cmd[:] = cf.command
 
-            _command_is_not_in_there( acc_cmd, att_cur )
+            _command_is_not_in_there( att_cur, acc_cmd )
 
             _command_as_RPY( acc_cmd, command )
 

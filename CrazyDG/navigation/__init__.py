@@ -2,6 +2,8 @@ from ..crazy import CrazyDragon
 
 from threading import Thread
 
+from scipy.spatial.transform import Rotation
+
 from .._base._navigation_base.imu       import IMU
 from .._base._navigation_base.imu_setup import preflight_sequence
 from .._base._navigation_base.qualisys  import Qualisys
@@ -32,7 +34,10 @@ class Navigation( Thread ):
         cf.pos[:] = data[0:3]
         cf.att[:] = data[3:6]
 
-        cf.extpos.send_extpos( data[0], data[1], data[2] )
+        R = Rotation.from_euler( 'zyx', cf.att[::-1], degrees=True )
+        q = R.as_quat()
+
+        cf.extpos.send_extpose( data[0], data[1], data[2], q[0], q[1], q[2], q[3] )
 
 
     def run( self ):
