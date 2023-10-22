@@ -20,6 +20,7 @@ class Qualisys( Thread ):
         else:
             self._cfs = _cfs
 
+        self.daemon=True
         self.on_pose    = {}
         self.connection = None
         self.qtm_6DoF_labels = []
@@ -53,7 +54,7 @@ class Qualisys( Thread ):
 
     async def _connect( self ):
 
-        self.connection = await qtm.connect( '127.0.0.1' )
+        self.connection = await qtm.connect( '127.0.0.1', version='1.23' )
 
         if self.connection is None:
             print( "Failed to connect" )

@@ -51,7 +51,7 @@ class Controller( Thread ):
 
         for _ in range( 50 ):
             commander.send_setpoint( 0, 0, 0, 10001 )
-            sleep( 0.2 )
+            sleep( 0.02 )
 
         commander.send_stop_setpoint()
 
@@ -86,21 +86,21 @@ class Controller( Thread ):
 
             if ( acc_cmd[2] == 0 ):
                 sleep( dt )
-                return
 
-            for _ in range( n ):
+            else:
+                for _ in range( n ):
 
-                thrust[0] += _dot_thrust( command, acc_cur )
+                    thrust[0] += _dot_thrust( command, acc_cur )
 
-                thrust[0] = _thrust_clip( thrust[0] )
+                    thrust[0] = _thrust_clip( thrust[0] )
 
-                commander.send_setpoint(
-                    command[0],
-                    command[1],
-                    command[2],
-                    thrust[0]
-                )
+                    commander.send_setpoint(
+                        command[0],
+                        command[1],
+                        command[2],
+                        thrust[0]
+                    )
 
-                sleep( dt )
+                    sleep( dt )
 
         print( 'controller end' )
