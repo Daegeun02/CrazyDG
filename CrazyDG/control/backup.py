@@ -19,7 +19,7 @@ from time import sleep
 class Controller( Thread ):
 
     def __init__( self, cf: CrazyDragon, config ):
-
+        
         super().__init__()
 
         self.daemon = True
@@ -29,7 +29,6 @@ class Controller( Thread ):
         self.n  = config['n']
 
         self.acc_cmd = zeros(3)
-        self.yaw_cmd = zeros(1)
         self.command = zeros(4)
         self.thrust  = array( [alpha * 9.81], dtype=int )
 
@@ -69,7 +68,6 @@ class Controller( Thread ):
         acc_cur = cf.acc
 
         acc_cmd = self.acc_cmd
-        yaw_cmd = self.yaw_cmd
         command = self.command
         thrust  = self.thrust
 
@@ -81,7 +79,6 @@ class Controller( Thread ):
         while cf.ready_for_command:
 
             acc_cmd[:] = cf.command
-            yaw_cmd[:] = cf.yaw_cmd
 
             _command_is_not_in_there( att_cur, acc_cmd )
 
@@ -93,19 +90,9 @@ class Controller( Thread ):
             else:
                 for _ in range( n ):
 
-                    ## Thrust I loop
                     thrust[0] += _dot_thrust( command, acc_cur )
 
                     thrust[0] = _thrust_clip( thrust[0] )
-
-                    ## YawRate PD loop
-                    p_yawrate  = command[2]
-                    command[2] = 0
-                    command[2] += 1.0 * ( yaw_cmd - att_cur[2] )
-                    command[2] -= 1.6 * p_yawrate
-
-                    if   ( command[2] >  5 ): command[2] = 5
-                    elif ( command[2] < -5 ): command[2] = -5
 
                     commander.send_setpoint(
                         command[0],
