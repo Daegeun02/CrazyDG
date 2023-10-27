@@ -1,4 +1,4 @@
-version = "__5.0.7__"
+version = "__5.0.8__"
 
 from .control import Controller
 

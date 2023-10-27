@@ -37,6 +37,8 @@ class Navigation( Thread ):
         R = Rotation.from_euler( 'zyx', cf.att[::-1], degrees=True )
         q = R.as_quat()
 
+        cf.rot[:,:] = R.as_matrix()
+
         cf.extpos.send_extpose( data[0], data[1], data[2], q[0], q[1], q[2], q[3] )
 
 
