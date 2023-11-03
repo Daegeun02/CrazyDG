@@ -30,7 +30,7 @@ def hover( cf: CrazyDragon, T, dt=0.1 ):
 
     des[:] = cur[:]
 
-    cf.destination[:] = des
+    cf.des[:] = des
 
     for _ in range( n ):
 

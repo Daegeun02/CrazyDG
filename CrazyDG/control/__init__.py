@@ -99,18 +99,15 @@ class Controller( Thread ):
                     thrust[0] = _thrust_clip( thrust[0] )
 
                     ## YawRate PD loop
-                    p_yawrate  = command[2]
-                    command[2] = 0
-                    command[2] += 1.0 * ( yaw_cmd - att_cur[2] )
-                    command[2] -= 1.6 * p_yawrate
+                    command[2] = 4.0 * ( yaw_cmd - att_cur[2] )
 
-                    if   ( command[2] >  5 ): command[2] = 5
-                    elif ( command[2] < -5 ): command[2] = -5
+                    if   ( command[2] >  120 ): command[2] =  120
+                    elif ( command[2] < -120 ): command[2] = -120
 
                     commander.send_setpoint(
                         command[0],
                         command[1],
-                        command[2],
+                        -command[2],
                         thrust[0]
                     )
 

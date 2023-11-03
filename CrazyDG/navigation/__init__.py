@@ -32,7 +32,6 @@ class Navigation( Thread ):
     def _on_pose( cls, cf: CrazyDragon, data: list ):
         
         cf.pos[:] = data[0:3]
-        cf.att[:] = data[3:6]
 
         R = Rotation.from_euler( 'zyx', cf.att[::-1], degrees=True )
         q = R.as_quat()
@@ -55,6 +54,7 @@ class Navigation( Thread ):
 
         imu.start_get_acc()
         imu.start_get_vel()
+        imu.start_get_att()
 
         qtm.on_pose = lambda pose: __class__._on_pose( cf, pose )
 

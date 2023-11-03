@@ -18,15 +18,13 @@ Kp = w * w
 Kd = 2 * j * w
 
 
-def landing_supporter( cf: CrazyDragon, recorder:Recorder, option=1, dt=0.1, step=0.03 ):
+def landing_supporter( cf: CrazyDragon, option=1, dt=0.1, step=0.03 ):
 
     des     = zeros(3)
     acc_cmd = zeros(3)
     P_pos   = zeros(3)
     D_pos   = zeros(3)
     care_g  = array([0,0,9.81])
-
-    print( 'landing supporter', recorder.record_length )
 
     pos = cf.pos
     vel = cf.vel

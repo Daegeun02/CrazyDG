@@ -38,6 +38,17 @@ class IMU:
         log_conf.start()
 
 
+    def start_get_att( self, period_in_ms=period_in_ms ):
+        log_conf = LogConfig( name='Euler_angle', period_in_ms=period_in_ms )
+        log_conf.add_variable( 'stateEstimate.roll' , 'FP16' )
+        log_conf.add_variable( 'stateEstimate.pitch', 'FP16' )
+        log_conf.add_variable( 'stateEstimate.yaw'  , 'FP16' )
+
+        self.cf.log.add_config( log_conf )
+        log_conf.data_received_cb.add_callback( self.euler_callback )
+        log_conf.start()
+
+
     def velocity_callback( self, timestamp, data, logconf ):
         self.cf.vel[0] = data['stateEstimate.vx']
         self.cf.vel[1] = data['stateEstimate.vy']
@@ -48,3 +59,9 @@ class IMU:
         self.cf.acc[0] = data['acc.x'] * 9.81
         self.cf.acc[1] = data['acc.y'] * 9.81
         self.cf.acc[2] = data['acc.z'] * 9.81
+    
+
+    def euler_callback(self, timestamp, data, logconf):
+        self.cf.att[0] = data['stateEstimate.roll']
+        self.cf.att[1] = data['stateEstimate.pitch']
+        self.cf.att[2] = data['stateEstimate.yaw']

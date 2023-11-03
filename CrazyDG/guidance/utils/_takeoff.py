@@ -32,7 +32,7 @@ def takeoff( cf: CrazyDragon, h=1.5, T=3, dt=0.1 ):
     des[ 1 ] = cur[1]
     des[ 2 ] = h
 
-    cf.destination[:] = des
+    cf.des[:] = des
 
     for _ in range( n ):
 

@@ -30,7 +30,7 @@ def goto( cf: CrazyDragon, destination, T, dt=0.1 ):
 
     des[:] = destination
 
-    cf.destination[:] = des
+    cf.des[:] = des
 
     for _ in range( n ):
 

@@ -11,7 +11,7 @@ from os import system
 
 import datetime
 
-from numpy import zeros, array
+from numpy import zeros, save
 
 from time import sleep
 
@@ -28,6 +28,9 @@ class Recorder( Thread ):
 
         self.recording = True
 
+        self.G_Start = -1
+        self.G_Stopd = -1
+
         self.idxn = 0
 
         self.record_datas = {
@@ -35,6 +38,7 @@ class Recorder( Thread ):
             'acccmd': zeros((3,n)),
             'vel'   : zeros((3,n)),
             'pos'   : zeros((3,n)),
+            'poscmd': zeros((3,n)),
             'att'   : zeros((3,n)),
             'cmd'   : zeros((4,n)),
             'thrust': zeros((1,n))
@@ -45,6 +49,7 @@ class Recorder( Thread ):
             'acccmd': _cf.command,
             'vel'   : _cf.vel,
             'pos'   : _cf.pos,
+            'poscmd': _cf.des,
             'att'   : _cf.att,
             'cmd'   : CTR.command,
             'thrust': CTR.thrust
@@ -52,8 +57,6 @@ class Recorder( Thread ):
 
 
     def run( self ):
-
-        _cf = self._cf
 
         data_pointer = self.data_pointer
         record_datas = self.record_datas
@@ -79,6 +82,7 @@ class Recorder( Thread ):
         acccmd = self.record_datas['acccmd']
         vel    = self.record_datas['vel']
         pos    = self.record_datas['pos']
+        poscmd = self.record_datas['poscmd']
         att    = self.record_datas['att']
         cmd    = self.record_datas['cmd']
         thrust = self.record_datas['thrust']
@@ -92,6 +96,15 @@ class Recorder( Thread ):
 
         system( f'cd ./flight_data && mkdir {date}' )
 
-        plot_T( acc, acccmd, vel, pos, date )
-        plot_R( att, attcmd, date )
-        plot_Thrust( thrust, thrustcmd )
+        save( f'./flight_data/{date}/acc_cmd', acccmd )
+        save( f'./flight_data/{date}/acc'    , acc )
+        save( f'./flight_data/{date}/vel'    , vel )
+        save( f'./flight_data/{date}/pos_cmd', poscmd )
+        save( f'./flight_data/{date}/pos'    , pos )
+        save( f'./flight_data/{date}/command', cmd )
+        save( f'./flight_data/{date}/att_cmd', attcmd )
+        save( f'./flight_data/{date}/att'    , att )
+
+        plot_T( acc, acccmd, vel, pos, date, self.G_Start, self.G_Stopd )
+        plot_R( att, attcmd, date, self.G_Start, self.G_Stopd )
+        plot_Thrust( thrust, thrustcmd, self.G_Start, self.G_Stopd )

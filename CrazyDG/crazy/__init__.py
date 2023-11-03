@@ -15,7 +15,7 @@ class CrazyDragon( Crazyflie ):
         self.acc         = zeros(3)
         self.command     = zeros(3)
         self.yaw_cmd     = zeros(1)
-        self.destination = zeros(3)
+        self.des         = zeros(3)
         self.rot         = eye(3)
 
         self.ready_for_command = False
