@@ -8,8 +8,9 @@ from cflib                         import crtp
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.utils                   import uri_helper
 
-nav_config = {
-    'body_name': 'cf1'
+
+cfs = {
+    'cf1': None
 }
 
 ctr_config = {
@@ -28,11 +29,15 @@ if __name__ == "__main__":
     
     _cf = CrazyDragon()
 
+    NAV = Navigation( _cf )
+    CTR = Controller( _cf, ctr_config )
+    RCD = Recorder( _cf, CTR )
+
+    cfs['cf1'] = _cf
+
     with SyncCrazyflie( uri, cf=_cf ) as scf:
 
-        NAV = Navigation( _cf, nav_config )
-        CTR = Controller( _cf, ctr_config )
-        RCD = Recorder( _cf, CTR )
+        Navigation.init_qualisys( cfs )
 
         NAV.start()
         CTR.start()

@@ -14,7 +14,9 @@ from time import sleep
 
 class Navigation( Thread ):
 
-    def __init__( self, cf: CrazyDragon, config ):
+    qtm = -1
+
+    def __init__( self, cf: CrazyDragon ):
 
         super().__init__()
 
@@ -23,7 +25,6 @@ class Navigation( Thread ):
         self.cf = cf
 
         self.imu = IMU( cf )
-        self.qtm = Qualisys( config['body_name'] )
 
         self.navigate = True
 
@@ -39,6 +40,16 @@ class Navigation( Thread ):
         cf.rot[:,:] = R.as_matrix()
 
         cf.extpos.send_extpose( data[0], data[1], data[2], q[0], q[1], q[2], q[3] )
+
+
+    @classmethod
+    def init_qualisys( cls, cfs: dict ):
+
+        cls.qtm = Qualisys( cfs )
+
+        sleep( 1 )
+
+        cls.qtm.on_pose = lambda cf, pose: __class__._on_pose( cf, pose )
 
 
     def run( self ):

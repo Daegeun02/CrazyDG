@@ -15,10 +15,7 @@ class Qualisys( Thread ):
 
         Thread.__init__( self )
 
-        if ( type( _cfs ) != dict ):
-            self._cfs = { _cfs: None }
-        else:
-            self._cfs = _cfs
+        self._cfs = _cfs
 
         self.daemon=True
         self.on_pose    = {}
@@ -54,7 +51,7 @@ class Qualisys( Thread ):
 
     async def _connect( self ):
 
-        self.connection = await qtm.connect( '127.0.0.1', version='1.23' )
+        self.connection = await qtm.connect( '127.0.0.1' )
 
         if self.connection is None:
             print( "Failed to connect" )
@@ -89,7 +86,7 @@ class Qualisys( Thread ):
 
         header, bodies  = packet.get_6d_euler()
 
-        for bodyname, _ in self._cfs.items():
+        for bodyname, _cf in self._cfs.items():
 
             if bodyname not in self.qtm_6DoF_labels:
                 print( 'Body' + bodyname + 'not found.' )
@@ -116,4 +113,4 @@ class Qualisys( Thread ):
                         if isnan( x ):
                             return
 
-                        self.on_pose( [x, y, z, R, P, Y] )
+                        self.on_pose( _cf, [x, y, z, R, P, Y] )
