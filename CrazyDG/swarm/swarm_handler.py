@@ -53,7 +53,7 @@ class SwarmHandler:
                 args += args_list
 
             if ( args_dict != None ):
-                args += args_dict[bodyname]
+                args += [args_dict[bodyname]]
 
             thread = Thread( target=func, args=args )
             threads.append( thread )

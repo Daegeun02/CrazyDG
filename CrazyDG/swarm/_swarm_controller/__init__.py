@@ -34,6 +34,7 @@ class SwarmController( Thread, SwarmHandler ):
         self.n  = config['n']
 
         self.acc_cmd = zeros(3)
+        self.yaw_cmd = zeros(1)
         self.command = zeros(4)
         self.thrust  = array( [alpha * 9.81], dtype=int )
 
@@ -93,6 +94,7 @@ class SwarmController( Thread, SwarmHandler ):
         for bodyname, _ in _cfs.items():
             args_dict[bodyname] = [ 
                 zeros_like( self.acc_cmd ),
+                zeros_like( self.yaw_cmd ),
                 zeros_like( self.command ),
                 zeros_like( self.thrust )
             ]
@@ -112,8 +114,9 @@ class SwarmController( Thread, SwarmHandler ):
         acc_cur = _cf.att
 
         acc_cmd = args[2]
-        command = args[3]
-        thrust  = args[4]
+        yaw_cmd = args[3]
+        command = args[4]
+        thrust  = args[5]
         
         while not _cf.ready_for_command:
             sleep( 0.1 )
@@ -121,14 +124,14 @@ class SwarmController( Thread, SwarmHandler ):
         while _cf.ready_for_command:
 
             acc_cmd[:] = _cf.command
+            yaw_cmd[:] = _cf.yaw_cmd
 
-            _command_is_not_in_there( acc_cmd, att_cur )
+            _command_is_not_in_there( att_cur, acc_cmd )
 
             _command_as_RPY( acc_cmd, command )
 
             if ( acc_cmd[2] == 0 ):
                 sleep( dt )
-                return 
             
             for _ in range( n ):
 
@@ -136,10 +139,15 @@ class SwarmController( Thread, SwarmHandler ):
 
                 thrust[0] = _thrust_clip( thrust[0] )
 
+                command[2] = 4.0 * ( yaw_cmd - att_cur[2] )
+
+                if   ( command[2] >  120 ): command[2] =  120
+                elif ( command[2] < -120 ): command[2] = -120
+
                 commander.send_setpoint(
                     command[0],
                     command[1],
-                    command[2],
+                    -command[2],
                     thrust[0]
                 )
 
