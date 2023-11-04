@@ -1,4 +1,4 @@
-__version__ = "6.0.0"
+__version__ = "6.0.1"
 
 from .control import Controller
 
@@ -11,3 +11,6 @@ from .guidance import utils
 from .navigation import Navigation
 
 from .recorder import Recorder
+
+from .swarm import SwarmController
+from .swarm import SwarmNavigation
