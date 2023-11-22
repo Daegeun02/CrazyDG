@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     NAV = Navigation( _cf )
     CTR = Controller( _cf, ctr_config )
-    RCD = Recorder( _cf, CTR )
+    RCD = Recorder( _cf, CTR, 'cf1', date )
 
     cfs['cf1'] = _cf
 
