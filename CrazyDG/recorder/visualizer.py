@@ -4,7 +4,7 @@ from numpy import arange
 
 
 
-def plot_T( acc, acccmd, vel, pos, poscmd, date, idx1, idx2, dt=0.1 ):
+def plot_T( acc, acccmd, vel, pos, poscmd, date, idx1, idx2, Name, dt=0.1 ):
 
     tim = arange( 0, len(acc[0,:]) ) * dt
 
@@ -58,10 +58,10 @@ def plot_T( acc, acccmd, vel, pos, poscmd, date, idx1, idx2, dt=0.1 ):
     axvline( ax8, tim, idx1, idx2 )
     axvline( ax9, tim, idx1, idx2 )
 
-    plt.savefig( f'./flight_data/{date}/T.png' )
+    plt.savefig( f'./flight_data/{date}/{Name}/T.png' )
 
 
-def plot_Thrust( thrust, thrustcmd, date, idx1, idx2, dt=0.1 ):
+def plot_Thrust( thrust, thrustcmd, date, idx1, idx2, Name, dt=0.1 ):
 
     tim = arange( 0, len(thrust[0,:]) ) * dt
 
@@ -75,10 +75,10 @@ def plot_Thrust( thrust, thrustcmd, date, idx1, idx2, dt=0.1 ):
 
     axvline( ax1, tim, idx1, idx2 )
 
-    plt.savefig( f'./flight_data/{date}/thrust.png' )
+    plt.savefig( f'./flight_data/{date}/{Name}/thrust.png' )
 
 
-def plot_R( att, attcmd, date, idx1, idx2, dt=0.1 ):
+def plot_R( att, attcmd, date, idx1, idx2, Name, dt=0.1 ):
 
     tim = arange( 0, len(att[0,:]) ) * dt
 
@@ -103,7 +103,7 @@ def plot_R( att, attcmd, date, idx1, idx2, dt=0.1 ):
     axvline( ax2, tim, idx1, idx2 )
     axvline( ax3, tim, idx1, idx2 )
 
-    plt.savefig( f'./flight_data/{date}/R.png' )
+    plt.savefig( f'./flight_data/{date}/{Name}/R.png' )
 
 
 

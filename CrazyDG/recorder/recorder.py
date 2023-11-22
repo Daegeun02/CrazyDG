@@ -9,7 +9,7 @@ from .visualizer import plot_R, plot_T, plot_Thrust
 
 from os import system
 
-import datetime
+from pandas import DataFrame
 
 from numpy import zeros, save
 
@@ -19,12 +19,15 @@ from time import sleep
 
 class Recorder( Thread ):
 
-    def __init__( self , _cf: CrazyDragon, CTR: Controller, n=18000 ):
+    def __init__( self , _cf: CrazyDragon, CTR: Controller, myName:str, when: str, n=18000 ):
 
         super().__init__()
 
         self._cf = _cf
         self.CTR = CTR
+
+        self.myName = myName
+        self.date   = when
 
         self.recording = True
 
@@ -90,21 +93,46 @@ class Recorder( Thread ):
         attcmd    = cmd[0:3,:]
         thrustcmd = cmd[ 3 ,:] * alpha
 
-        d = datetime.datetime.now()
-        date      = f'{d.year}-{d.month}-{d.day:02}-{d.hour:02}-{d.minute:02}-{d.second:02}'
-        self.date = date
+        system( f'cd ./flight_data && mkdir {self.myName}' )
 
-        system( f'cd ./flight_data && mkdir {date}' )
+        DF = DataFrame(
+            {
+                'acc_cmd x': acccmd[0,:],
+                'acc_cmd y': acccmd[1,:],
+                'acc_cmd z': acccmd[2,:],
 
-        save( f'./flight_data/{date}/acc_cmd', acccmd )
-        save( f'./flight_data/{date}/acc'    , acc )
-        save( f'./flight_data/{date}/vel'    , vel )
-        save( f'./flight_data/{date}/pos_cmd', poscmd )
-        save( f'./flight_data/{date}/pos'    , pos )
-        save( f'./flight_data/{date}/command', cmd )
-        save( f'./flight_data/{date}/att_cmd', attcmd )
-        save( f'./flight_data/{date}/att'    , att )
+                'acc x': acc[0,:],
+                'acc y': acc[1,:],
+                'acc z': acc[2,:],
 
-        plot_T( acc, acccmd, vel, pos, date, self.G_Start, self.G_Stopd )
-        plot_R( att, attcmd, date, self.G_Start, self.G_Stopd )
-        plot_Thrust( thrust, thrustcmd, self.G_Start, self.G_Stopd )
+                'vel x': vel[0,:],
+                'vel y': vel[1,:],
+                'vel z': vel[2,:],
+
+                'pos_cmd x': poscmd[0,:],
+                'pos_cmd y': poscmd[1,:],
+                'pos_cmd z': poscmd[2,:],
+
+                'pos x': pos[0,:],
+                'pos y': pos[1,:],
+                'pos z': pos[2,:],
+
+                'command x': cmd[0,:],
+                'command y': cmd[1,:],
+                'command z': cmd[2,:],
+
+                'att_cmd x': attcmd[0,:],
+                'att_cmd y': attcmd[1,:],
+                'att_cmd z': attcmd[2,:],
+
+                'att x': att[0,:],
+                'att y': att[1,:],
+                'att z': att[2,:]
+            }
+        )
+
+        DF.to_csv( f'./flight_data/{self.date}/{self.myName}.csv' )
+
+        plot_T( acc, acccmd, vel, pos, self.date, self.G_Start, self.G_Stopd, self.myName )
+        plot_R( att, attcmd, self.date, self.G_Start, self.G_Stopd, self.myName )
+        plot_Thrust( thrust, thrustcmd, self.date, self.G_Start, self.G_Stopd, self.myName )

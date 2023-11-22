@@ -49,7 +49,7 @@ class Navigation( Thread ):
 
         sleep( 1 )
 
-        cls.qtm.on_pose = lambda cf, pose: __class__._on_pose( cf, pose )
+        cls.qtm.on_pose = __class__._on_pose
 
 
     def run( self ):
@@ -66,8 +66,6 @@ class Navigation( Thread ):
         imu.start_get_acc()
         imu.start_get_vel()
         imu.start_get_att()
-
-        qtm.on_pose = lambda pose: __class__._on_pose( cf, pose )
 
         while self.navigate:
 

@@ -8,6 +8,8 @@ from cflib                         import crtp
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.utils                   import uri_helper
 
+import datetime
+
 
 cfs = {
     'cf1': None
@@ -17,6 +19,10 @@ ctr_config = {
     'dt': 0.1,
     'n' : 5
 }
+
+
+d = datetime.datetime.now()
+date      = f'{d.year}-{d.month}-{d.day:02}-{d.hour:02}-{d.minute:02}-{d.second:02}'
 
 
 
