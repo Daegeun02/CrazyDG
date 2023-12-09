@@ -8,6 +8,10 @@ from .._base._navigation_base.imu       import IMU
 from .._base._navigation_base.imu_setup import preflight_sequence
 from .._base._navigation_base.qualisys  import Qualisys
 
+from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
+
+from numpy import zeros
+
 from time import sleep
 
 
@@ -16,15 +20,24 @@ class Navigation( Thread ):
 
     qtm = -1
 
-    def __init__( self, cf: CrazyDragon ):
+    def __init__( self, cf: CrazyDragon, uri=None, need_velocity=False ):
 
         super().__init__()
 
         self.daemon = True
 
-        self.cf = cf
+        if ( need_velocity ):
+            thread = Thread( target=self._numerical_difference, args=[cf], daemon=True )
+            thread.start()
+
+        self.cf  = cf
+        self.scf = None
 
         self.imu = IMU( cf )
+
+        if ( uri != None ):
+            self.scf = SyncCrazyflie( uri, cf )
+            self.scf.open_link()
 
         self.navigate = True
 
@@ -57,7 +70,6 @@ class Navigation( Thread ):
         cf = self.cf
 
         imu = self.imu
-        qtm = self.qtm
 
         preflight_sequence( cf )
 
@@ -72,8 +84,30 @@ class Navigation( Thread ):
             sleep( 0.1 )
 
 
+    @staticmethod
+    def _numerical_difference( _cf: CrazyDragon, dt=0.01 ):
+
+        p_pos = zeros(3)
+
+        while True:
+
+            _cf.vel[:] = ( _cf.pos - p_pos ) / dt
+
+            p_pos[:] = _cf.pos
+
+            sleep( dt )
+
+
     def join( self ):
 
         self.navigate = False
 
+        self.close()
+
         super().join()
+
+    
+    def close( self ):
+
+        if self.scf != None:
+            self.scf.close_link()

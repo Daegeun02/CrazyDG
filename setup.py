@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='CrazyDG',
-    version='6.0.1',
+    version='6.1.0',
     description='CrazyDG is for convenience',
     author='Daegeun02',
     author_email='redhawkdg02@gmail.com',

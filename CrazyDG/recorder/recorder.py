@@ -40,6 +40,7 @@ class Recorder( Thread ):
             'acc'   : zeros((3,n)),
             'acccmd': zeros((3,n)),
             'vel'   : zeros((3,n)),
+            'relvel': zeros((3,n)),
             'pos'   : zeros((3,n)),
             'poscmd': zeros((3,n)),
             'att'   : zeros((3,n)),
@@ -51,6 +52,7 @@ class Recorder( Thread ):
             'acc'   : _cf.acc,
             'acccmd': _cf.command,
             'vel'   : _cf.vel,
+            'relvel': _cf.v_rel,
             'pos'   : _cf.pos,
             'poscmd': _cf.des,
             'att'   : _cf.att,
@@ -81,19 +83,20 @@ class Recorder( Thread ):
 
         super().join()
 
-        acc    = self.record_datas['acc']
-        acccmd = self.record_datas['acccmd']
-        vel    = self.record_datas['vel']
-        pos    = self.record_datas['pos']
-        poscmd = self.record_datas['poscmd']
-        att    = self.record_datas['att']
-        cmd    = self.record_datas['cmd']
-        thrust = self.record_datas['thrust']
+        acc    = self.record_datas['acc'][:,:self.idxn]
+        acccmd = self.record_datas['acccmd'][:,:self.idxn]
+        vel    = self.record_datas['vel'][:,:self.idxn]
+        relvel = self.record_datas['relvel'][:,:self.idxn]
+        pos    = self.record_datas['pos'][:,:self.idxn]
+        poscmd = self.record_datas['poscmd'][:,:self.idxn]
+        att    = self.record_datas['att'][:,:self.idxn]
+        cmd    = self.record_datas['cmd'][:,:self.idxn]
+        thrust = self.record_datas['thrust'][:,:self.idxn]
 
-        attcmd    = cmd[0:3,:]
-        thrustcmd = cmd[ 3 ,:] * alpha
+        attcmd    = cmd[0:3,:self.idxn]
+        thrustcmd = cmd[ 3 ,:self.idxn] * alpha
 
-        system( f'cd ./flight_data && mkdir {self.myName}' )
+        system( f'cd ./flight_data/{self.date} && mkdir {self.myName}' )
 
         DF = DataFrame(
             {
@@ -108,6 +111,10 @@ class Recorder( Thread ):
                 'vel x': vel[0,:],
                 'vel y': vel[1,:],
                 'vel z': vel[2,:],
+
+                'rel_vel x': relvel[0,:],
+                'rel_vel y': relvel[1,:],
+                'rel_vel z': relvel[2,:],
 
                 'pos_cmd x': poscmd[0,:],
                 'pos_cmd y': poscmd[1,:],
@@ -127,7 +134,10 @@ class Recorder( Thread ):
 
                 'att x': att[0,:],
                 'att y': att[1,:],
-                'att z': att[2,:]
+                'att z': att[2,:],
+
+                'thrust'    : thrust[:],
+                'thrust_cmd': thrustcmd[:]
             }
         )
 

@@ -18,4 +18,6 @@ class CrazyDragon( Crazyflie ):
         self.des         = zeros(3)
         self.rot         = eye(3)
 
+        self.v_rel       = zeros(3)
+
         self.ready_for_command = False

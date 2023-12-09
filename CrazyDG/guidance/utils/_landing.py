@@ -43,16 +43,19 @@ def landing( cf: CrazyDragon, option=1, h=0.2, T=5, dt=0.1, step=0.075 ):
 
     cf.des[:] = des
 
+    if ( T > 5 ):
+        T = 5
+
     for _ in range( n ):
 
         des_cmd[:] = smooth_command( 
-            des, cur, t, 5.0
+            des, cur, t, T
         )
 
         P_pos[:] = des_cmd - pos
         D_pos[:] = vel
 
-        if ( norm( pos - des ) ) < 0.2:
+        if ( norm( pos - des ) ) < h:
             break
 
         acc_cmd[:] = 0

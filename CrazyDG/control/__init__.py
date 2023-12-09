@@ -8,7 +8,7 @@ from .._base._controller_base.integral_loop import _thrust_clip
 from .._base._controller_base.optimus_prime import _command_as_RPY
 from .._base._controller_base.optimus_prime import _command_is_not_in_there
 
-from .._base._controller_base.constants import alpha
+from .._base._controller_base.constants import alpha, g
 
 from numpy import zeros, array
 
@@ -114,3 +114,26 @@ class Controller( Thread ):
                     sleep( dt )
 
         print( 'controller end' )
+
+
+    @staticmethod
+    def Emergence( _cf: CrazyDragon ):
+
+        _cf.ready_for_command = False
+
+        commander = _cf.commander
+
+        for i in range( 50 ):
+
+            commander.send_setpoint(
+                0,
+                0,
+                0,
+                int( alpha * g - i * 500 )
+            )
+
+            sleep( 0.1 )
+
+        commander.send_setpoint( 0, 0, 0, 10001 )
+
+        commander.send_stop_setpoint()

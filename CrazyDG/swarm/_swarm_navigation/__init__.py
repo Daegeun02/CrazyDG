@@ -31,7 +31,7 @@ class SwarmNavigation( Thread, SwarmHandler ):
 
         sleep( 1 )
 
-        self.qtm.on_pose = lambda cf, pose: __class__._on_pose( cf, pose )
+        self.qtm.on_pose = __class__._on_pose
 
         self.parallel_run( preflight_sequence, self.cfs )
 
